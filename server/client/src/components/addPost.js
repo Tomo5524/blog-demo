@@ -19,8 +19,6 @@ function AddPost() {
   };
 
   const handleSubmit = (e) => {
-    // alert("A form was submitted: " + title + description);
-
     fetch("/api/add-post", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
