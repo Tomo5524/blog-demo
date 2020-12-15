@@ -15,7 +15,8 @@ function AddPost() {
     settTitle(e.target.value);
   };
   const descriptionChange = (e) => {
-    setDdescription(e.target.value);
+    console.log(e.target.getContent(), "e.target.getContent()");
+    setDdescription(e.target.getContent());
   };
 
   const handleSubmit = (e) => {
@@ -31,6 +32,7 @@ function AddPost() {
       //   "description": "sdafasdf"
       // }
     }).then(function (response) {
+      console.log(description);
       console.log(response);
       return response.json();
     });
@@ -54,10 +56,23 @@ function AddPost() {
         <Form.Group>
           <Form.Label>Description</Form.Label>
           <Editor
-            apiKey=""
-            type="text"
-            plugins="wordcount"
+            apiKey={process.env.tinyAPI}
             name="name"
+            init={{
+              plugins: [
+                "advlist autolink lists link image charmap print preview anchor",
+                "searchreplace visualblocks code fullscreen",
+                "insertdatetime media table contextmenu paste imagetools wordcount help ",
+              ],
+              toolbar:
+                "undo redo | formatselect | bold italic | \
+                alignleft aligncenter alignright | \
+                bullist numlist outdent indent | help",
+
+              file_browser_callback_types: "image",
+              entity_encoding: "raw",
+              cleanup: true,
+            }}
             onChange={descriptionChange}
           />
         </Form.Group>

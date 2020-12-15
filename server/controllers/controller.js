@@ -14,7 +14,7 @@ exports.post_create_post = [
 
   // Process request after validation and sanitization.
   (req, res, next) => {
-    console.log(req.body, "req.body///////");
+    // console.log(req.body, "req.body///////");
     // console.log(req.body.brand, "req.body");
     // console.log(req.body.category, "req.body.category"); // 5fb06dddcc3e521c282ce22a req.body.category
 
