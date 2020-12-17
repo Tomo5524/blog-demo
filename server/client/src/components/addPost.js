@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import { useHistory } from "react-router-dom";
 
 function AddPost() {
   const [title, settTitle] = useState("");
-  const [description, setDdescription] = useState("");
+  const [description, setDescription] = useState("");
+  let history = useHistory();
   // useEffect(() => {
   //   fetch("/api/posts")
   //     .then((res) => res.json())
@@ -15,11 +17,17 @@ function AddPost() {
     settTitle(e.target.value);
   };
   const descriptionChange = (e) => {
+    // console.log(
+    //   e.target.getContent({ format: "text" }),
+    //   "e.target.getContent()"
+    // );
     console.log(e.target.getContent(), "e.target.getContent()");
-    setDdescription(e.target.getContent());
+    setDescription(e.target.getContent({ format: "html" }));
   };
 
   const handleSubmit = (e) => {
+    console.log(description, "description//////");
+
     fetch("/api/add-post", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -36,8 +44,8 @@ function AddPost() {
       console.log(response);
       return response.json();
     });
-
     e.preventDefault();
+    history.push("/posts");
   };
 
   return (
@@ -62,16 +70,21 @@ function AddPost() {
               plugins: [
                 "advlist autolink lists link image charmap print preview anchor",
                 "searchreplace visualblocks code fullscreen",
-                "insertdatetime media table contextmenu paste imagetools wordcount help ",
+                "insertdatetime media table contextmenu paste imagetools wordcount help code",
               ],
               toolbar:
-                "undo redo | formatselect | bold italic | \
-                alignleft aligncenter alignright | \
-                bullist numlist outdent indent | help",
+                "undo redo | formatselect | styleselect | fontsizeselect | bold italic | \
+                alignleft aligncenter alignright alignjustify  | \
+                bullist numlist outdent indent | removeformat | help",
 
               file_browser_callback_types: "image",
               entity_encoding: "raw",
+              encoding: "xml",
+              // selector: "textarea#myTextArea",
               cleanup: true,
+              forced_root_block: false,
+
+              // oninit: "setPlainText",
             }}
             onChange={descriptionChange}
           />
