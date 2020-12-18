@@ -18,6 +18,8 @@ function Posts() {
             {post.title} {post.date}
             {post.description}
             <br />
+            <div dangerouslySetInnerHTML={{ __html: post.description }} />
+            <br />
             {renderHTML(post.description)}
             <br />
             {renderHTML(renderHTML(post.description))}

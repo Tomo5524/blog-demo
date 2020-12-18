@@ -22,7 +22,11 @@ function AddPost() {
     //   "e.target.getContent()"
     // );
     console.log(e.target.getContent(), "e.target.getContent()");
-    setDescription(e.target.getContent({ format: "html" }));
+    console.log(
+      e.target.getContent({ format: "html" }),
+      "e.target.getContent({ format: 'html' })"
+    );
+    setDescription(e.target.getContent());
   };
 
   const handleSubmit = (e) => {
@@ -40,10 +44,14 @@ function AddPost() {
       //   "description": "sdafasdf"
       // }
     }).then(function (response) {
-      console.log(description);
-      console.log(response);
+      console.log(description, "description//////");
+      console.log(response, "response//////");
       return response.json();
     });
+    // .then((data) => {
+    //   console.log(data, "response//////");
+    //   return data.json();
+    // });
     e.preventDefault();
     history.push("/posts");
   };
@@ -79,7 +87,7 @@ function AddPost() {
 
               file_browser_callback_types: "image",
               entity_encoding: "raw",
-              encoding: "xml",
+              // encoding: "xml",
               // selector: "textarea#myTextArea",
               cleanup: true,
               forced_root_block: false,

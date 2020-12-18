@@ -5,7 +5,7 @@ var User = require("../models/user");
 var Post = require("../models/post");
 
 /* GET home page. */
-let a = [];
+
 router.get("/api/posts", function (req, res, next) {
   // const posts = [
   //   { id: 1, post: "meow meow meow", data: new Date().toLocaleString() },
