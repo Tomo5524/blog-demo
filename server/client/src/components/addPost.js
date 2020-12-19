@@ -48,10 +48,7 @@ function AddPost() {
       console.log(response, "response//////");
       return response.json();
     });
-    // .then((data) => {
-    //   console.log(data, "response//////");
-    //   return data.json();
-    // });
+
     e.preventDefault();
     history.push("/posts");
   };
