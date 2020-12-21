@@ -61,7 +61,7 @@ function AddPost() {
           <Form.Control
             type="text"
             placeholder="Enter title"
-            name="name"
+            name="title"
             onChange={titleChange}
           />
         </Form.Group>
@@ -70,7 +70,7 @@ function AddPost() {
           <Form.Label>Description</Form.Label>
           <Editor
             apiKey={process.env.tinyAPI}
-            name="name"
+            name="description"
             init={{
               plugins: [
                 "advlist autolink lists link image charmap print preview anchor",
@@ -79,7 +79,7 @@ function AddPost() {
               ],
               toolbar:
                 "undo redo | formatselect | styleselect | fontsizeselect | bold italic | \
-                alignleft aligncenter alignright alignjustify  | \
+                | link image | alignleft aligncenter alignright alignjustify  | \
                 bullist numlist outdent indent | removeformat | help",
 
               file_browser_callback_types: "image",
@@ -88,8 +88,33 @@ function AddPost() {
               // selector: "textarea#myTextArea",
               cleanup: true,
               forced_root_block: false,
-
+              menubar: "insert",
+              a11y_advanced_options: true,
               // oninit: "setPlainText",
+              image_title: true,
+              automatic_uploads: true,
+              file_picker_types: "image",
+              file_picker_callback: function (cb, value, meta) {
+                var input = document.createElement("input");
+                input.setAttribute("type", "file");
+                input.setAttribute("accept", "image/*");
+                input.onchange = function () {
+                  var file = this.files[0];
+                  var reader = new FileReader();
+                  reader.onload = function () {
+                    var id = "blobid" + new Date().getTime();
+                    var blobCache =
+                      window.tinymce.activeEditor.editorUpload.blobCache;
+                    var base64 = reader.result.split(",")[1];
+                    var blobInfo = blobCache.create(id, file, base64);
+                    blobCache.add(blobInfo);
+
+                    cb(blobInfo.blobUri(), { title: file.name });
+                  };
+                  reader.readAsDataURL(file);
+                };
+                input.click();
+              },
             }}
             onChange={descriptionChange}
           />
