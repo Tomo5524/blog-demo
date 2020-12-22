@@ -23,10 +23,10 @@ function AddPost() {
     // );
     console.log(e.target.getContent(), "e.target.getContent()");
     console.log(
-      e.target.getContent({ format: "html" }),
-      "e.target.getContent({ format: 'html' })"
+      window.tinymce.activeEditor.getContent(),
+      "window.tinymce.activeEditor.getContent()"
     );
-    setDescription(e.target.getContent());
+    setDescription(window.tinymce.activeEditor.getContent());
   };
 
   const handleSubmit = (e) => {
@@ -83,7 +83,7 @@ function AddPost() {
                 bullist numlist outdent indent | removeformat | help",
 
               file_browser_callback_types: "image",
-              entity_encoding: "raw",
+              // entity_encoding: "raw",
               // encoding: "xml",
               // selector: "textarea#myTextArea",
               cleanup: true,
@@ -92,8 +92,11 @@ function AddPost() {
               a11y_advanced_options: true,
               // oninit: "setPlainText",
               image_title: true,
-              automatic_uploads: true,
+              automatic_uploads: false,
               file_picker_types: "image",
+              relative_urls: true,
+              remove_script_host: false,
+              convert_urls: true,
               file_picker_callback: function (cb, value, meta) {
                 var input = document.createElement("input");
                 input.setAttribute("type", "file");
@@ -103,11 +106,17 @@ function AddPost() {
                   var reader = new FileReader();
                   reader.onload = function () {
                     var id = "blobid" + new Date().getTime();
+                    console.log(id, "id///////");
                     var blobCache =
                       window.tinymce.activeEditor.editorUpload.blobCache;
-                    var base64 = reader.result.split(",")[1];
+                    console.log(blobCache, "blobCache///////");
+                    let base64 = reader.result.split(",")[1];
+                    console.log(reader.result, "reader.result//////");
+                    console.log(base64, "base64///////");
+                    // base64 = base64.slice(0, 10);
                     var blobInfo = blobCache.create(id, file, base64);
                     blobCache.add(blobInfo);
+                    console.log(file.name, "file.name/////");
 
                     cb(blobInfo.blobUri(), { title: file.name });
                   };
