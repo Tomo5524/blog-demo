@@ -10,9 +10,12 @@
     "babel-polyfill": "^6.26.0",
     "bootstrap": "^4.5.3",
     "draft-js": "^0.11.7",
+    "draft-js-image-plugin": "^2.0.7",
+    "draft-js-plugins-editor": "^3.0.0",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.0",
     "react-dom": "^17.0.1",
+    "react-draft-wysiwyg": "^1.14.5",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
     "web-vitals": "^0.2.4"

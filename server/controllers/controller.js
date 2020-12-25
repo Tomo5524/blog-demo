@@ -14,7 +14,7 @@ exports.post_create_post = [
 
   // Process request after validation and sanitization.
   (req, res, next) => {
-    console.log(req.body, "req.body///////");
+    // console.log(req.body, "req.body///////");
     // console.log(req.body.brand, "req.body");
     // console.log(req.body.category, "req.body.category"); // 5fb06dddcc3e521c282ce22a req.body.category
 
@@ -33,6 +33,7 @@ exports.post_create_post = [
     });
 
     if (!errors.isEmpty()) {
+      // console.log(errors);
       // There are errors. Render the form again with sanitized values/error messages.
       // Genre.find({}, "name").exec(function (err, genres) {
       //   if (err) {
@@ -48,6 +49,7 @@ exports.post_create_post = [
     } else {
       post.save(function (err) {
         if (err) {
+          console.log(err, "err caught//////////////");
           return next(err);
         }
         // Genre saved. Redirect to genre detail page.

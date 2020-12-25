@@ -16,11 +16,11 @@ function Posts() {
         {posts.map((post) => (
           <li key={post.id}>
             {post.title} {post.date}
-            {post.description}
-            <br />
-            <div dangerouslySetInnerHTML={{ __html: post.description }} />
-            <br />
-            {renderHTML(post.description)}
+            {/* {post.description} */}
+            {/* <br /> */}
+            {/* <div dangerouslySetInnerHTML={{ __html: post.description }} /> */}
+            {/* <br /> */}
+            {/* {renderHTML(post.description)} */}
             <br />
             {renderHTML(renderHTML(post.description))}
           </li>
