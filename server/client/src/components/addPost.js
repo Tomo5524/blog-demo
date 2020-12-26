@@ -30,7 +30,7 @@ function AddPost() {
   };
 
   const handleSubmit = (e) => {
-    // console.log(description, "description//////");
+    console.log(description, "description//////");
 
     fetch("/api/add-post", {
       method: "POST",
@@ -87,31 +87,30 @@ function AddPost() {
               // entity_encoding: "raw",
               // encoding: "xml",
               // selector: "textarea#myTextArea",
-              cleanup: true,
-              forced_root_block: false,
-              menubar: "insert",
-              a11y_advanced_options: true,
-              // oninit: "setPlainText",
-              //
-              images_upload_url: "postAcceptor.php",
+              // cleanup: true,
+              // forced_root_block: false,
+              // a11y_advanced_options: true,
+              // // oninit: "setPlainText",
+              // //
+              // images_upload_url: "postAcceptor.php",
 
-              /* we override default upload handler to simulate successful upload*/
-              images_upload_handler: function (blobInfo, success, failure) {
-                setTimeout(function () {
-                  /* no matter what you upload, we will turn it into TinyMCE logo :)*/
-                  success(
-                    "http://moxiecode.cachefly.net/tinymce/v9/images/logo.png"
-                  );
-                }, 2000);
-              },
-              content_style:
-                "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+              // /* we override default upload handler to simulate successful upload*/
+              // images_upload_handler: function (blobInfo, success, failure) {
+              //   setTimeout(function () {
+              //     /* no matter what you upload, we will turn it into TinyMCE logo :)*/
+              //     success(
+              //       "http://moxiecode.cachefly.net/tinymce/v9/images/logo.png"
+              //     );
+              //   }, 2000);
+              // },
+              // content_style:
+              //   "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
               image_title: true,
               automatic_uploads: false,
               file_picker_types: "image",
-              relative_urls: true,
-              remove_script_host: false,
-              convert_urls: true,
+              // relative_urls: true,
+              // remove_script_host: false,
+              // convert_urls: true,
               file_picker_callback: function (cb, value, meta) {
                 var input = document.createElement("input");
                 input.setAttribute("type", "file");
@@ -124,14 +123,14 @@ function AddPost() {
                     console.log(id, "id///////");
                     var blobCache =
                       window.tinymce.activeEditor.editorUpload.blobCache;
-                    console.log(blobCache, "blobCache///////");
+                    // console.log(blobCache, "blobCache///////");
                     let base64 = reader.result.split(",")[1];
-                    console.log(reader.result, "reader.result//////");
-                    console.log(base64, "base64///////");
+                    // console.log(reader.result, "reader.result//////");
+                    // console.log(base64, "base64///////");
                     // base64 = base64.slice(0, 10);
                     var blobInfo = blobCache.create(id, file, base64);
                     blobCache.add(blobInfo);
-                    console.log(file.name, "file.name/////");
+                    // console.log(file.name, "file.name/////");
 
                     cb(blobInfo.blobUri(), { title: file.name });
                   };
