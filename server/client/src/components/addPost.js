@@ -4,6 +4,52 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useHistory } from "react-router-dom";
 
+function example_image_upload_handler(blobInfo, success, failure, progress) {
+  var xhr, formData;
+
+  xhr = new XMLHttpRequest();
+  xhr.withCredentials = false;
+  xhr.open("POST", "/api/add-post");
+
+  xhr.upload.onprogress = function (e) {
+    progress((e.loaded / e.total) * 100);
+  };
+
+  xhr.onload = function () {
+    var json;
+
+    if (xhr.status === 403) {
+      failure("HTTP Error: " + xhr.status, { remove: true });
+      return;
+    }
+
+    if (xhr.status < 200 || xhr.status >= 300) {
+      failure("HTTP Error: " + xhr.status);
+      return;
+    }
+
+    json = JSON.parse(xhr.responseText);
+
+    if (!json || typeof json.location != "string") {
+      failure("Invalid JSON: " + xhr.responseText);
+      return;
+    }
+
+    success(json.location);
+  };
+
+  xhr.onerror = function () {
+    failure(
+      "Image upload failed due to a XHR Transport error. Code: " + xhr.status
+    );
+  };
+
+  formData = new FormData();
+  formData.append("file", blobInfo.blob(), blobInfo.filename());
+
+  xhr.send(formData);
+}
+
 function AddPost() {
   const [title, settTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -83,7 +129,7 @@ function AddPost() {
                 | link image | alignleft aligncenter alignright alignjustify  | \
                 bullist numlist outdent indent | removeformat | help",
 
-              file_browser_callback_types: "image",
+              // file_browser_callback_types: "image",
               // entity_encoding: "raw",
               // encoding: "xml",
               // selector: "textarea#myTextArea",
@@ -92,11 +138,13 @@ function AddPost() {
               // a11y_advanced_options: true,
               // // oninit: "setPlainText",
               // //
-              // images_upload_url: "postAcceptor.php",
+              images_upload_handler: example_image_upload_handler,
+              // images_upload_url: "public/images",
 
               // /* we override default upload handler to simulate successful upload*/
               // images_upload_handler: function (blobInfo, success, failure) {
               //   setTimeout(function () {
+              //     console.log(blobInfo);
               //     /* no matter what you upload, we will turn it into TinyMCE logo :)*/
               //     success(
               //       "http://moxiecode.cachefly.net/tinymce/v9/images/logo.png"
@@ -105,39 +153,41 @@ function AddPost() {
               // },
               // content_style:
               //   "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-              image_title: true,
-              automatic_uploads: false,
-              file_picker_types: "image",
-              // relative_urls: true,
-              // remove_script_host: false,
-              // convert_urls: true,
-              file_picker_callback: function (cb, value, meta) {
-                var input = document.createElement("input");
-                input.setAttribute("type", "file");
-                input.setAttribute("accept", "image/*");
-                input.onchange = function () {
-                  var file = this.files[0];
-                  var reader = new FileReader();
-                  reader.onload = function () {
-                    var id = "blobid" + new Date().getTime();
-                    console.log(id, "id///////");
-                    var blobCache =
-                      window.tinymce.activeEditor.editorUpload.blobCache;
-                    // console.log(blobCache, "blobCache///////");
-                    let base64 = reader.result.split(",")[1];
-                    // console.log(reader.result, "reader.result//////");
-                    // console.log(base64, "base64///////");
-                    // base64 = base64.slice(0, 10);
-                    var blobInfo = blobCache.create(id, file, base64);
-                    blobCache.add(blobInfo);
-                    // console.log(file.name, "file.name/////");
 
-                    cb(blobInfo.blobUri(), { title: file.name });
-                  };
-                  reader.readAsDataURL(file);
-                };
-                input.click();
-              },
+              // image_title: true,
+              // automatic_uploads: false,
+              // file_picker_types: "image",
+              // // relative_urls: true,
+              // // remove_script_host: false,
+              // // convert_urls: true,
+              // file_picker_callback: function (cb, value, meta) {
+              //   var input = document.createElement("input");
+              //   input.setAttribute("type", "file");
+              //   input.setAttribute("accept", "image/*");
+              //   input.onchange = function () {
+              //     var file = this.files[0];
+              //     console.log(file);
+              //     var reader = new FileReader();
+              //     reader.onload = function () {
+              //       var id = "blobid" + new Date().getTime();
+              //       // console.log(id, "id///////");
+              //       var blobCache =
+              //         window.tinymce.activeEditor.editorUpload.blobCache;
+              //       // console.log(blobCache, "blobCache///////");
+              //       let base64 = reader.result.split(",")[1];
+              //       // console.log(reader.result, "reader.result//////");
+              //       // console.log(base64, "base64///////");
+              //       // base64 = base64.slice(0, 10);
+              //       var blobInfo = blobCache.create(id, file, base64);
+              //       blobCache.add(blobInfo);
+              //       // console.log(file.name, "file.name/////");
+
+              //       cb(blobInfo.blobUri(), { title: file.name });
+              //     };
+              //     reader.readAsDataURL(file);
+              //   };
+              //   input.click();
+              // },
             }}
           />
         </Form.Group>
