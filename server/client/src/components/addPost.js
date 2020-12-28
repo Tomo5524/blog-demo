@@ -9,7 +9,7 @@ function example_image_upload_handler(blobInfo, success, failure, progress) {
 
   xhr = new XMLHttpRequest();
   xhr.withCredentials = false;
-  xhr.open("POST", "/api/add-post");
+  xhr.open("POST", "http://localhost:5000/api/posts");
 
   xhr.upload.onprogress = function (e) {
     progress((e.loaded / e.total) * 100);
@@ -129,6 +129,7 @@ function AddPost() {
                 | link image | alignleft aligncenter alignright alignjustify  | \
                 bullist numlist outdent indent | removeformat | help",
 
+              /////
               // file_browser_callback_types: "image",
               // entity_encoding: "raw",
               // encoding: "xml",
@@ -138,13 +139,11 @@ function AddPost() {
               // a11y_advanced_options: true,
               // // oninit: "setPlainText",
               // //
-              images_upload_handler: example_image_upload_handler,
-              // images_upload_url: "public/images",
+              // images_upload_url: "postAcceptor.php",
 
               // /* we override default upload handler to simulate successful upload*/
               // images_upload_handler: function (blobInfo, success, failure) {
               //   setTimeout(function () {
-              //     console.log(blobInfo);
               //     /* no matter what you upload, we will turn it into TinyMCE logo :)*/
               //     success(
               //       "http://moxiecode.cachefly.net/tinymce/v9/images/logo.png"
@@ -153,7 +152,10 @@ function AddPost() {
               // },
               // content_style:
               //   "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-
+              ///////
+              // images_upload_url: "http://localhost:5000/api/posts",
+              images_upload_handler: example_image_upload_handler,
+              ////////
               // image_title: true,
               // automatic_uploads: false,
               // file_picker_types: "image",
