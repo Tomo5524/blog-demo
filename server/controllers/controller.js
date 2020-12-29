@@ -18,6 +18,7 @@ exports.post_create_post = [
     // console.log(req.file, "req.file///////");
     // console.log(req.body.brand, "req.body");
     // console.log(req.body.category, "req.body.category"); // 5fb06dddcc3e521c282ce22a req.body.category
+    res.json({ location: `public/images/${req.file.filename}` });
 
     // Extract the validation errors from a request.
     const errors = validationResult(req);

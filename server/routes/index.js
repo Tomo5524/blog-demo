@@ -23,7 +23,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-}).single("image");
+}).single("file");
+// got error messag because image was passed in. shoule have been file
 
 /* GET home page. */
 

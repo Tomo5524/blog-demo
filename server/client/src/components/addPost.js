@@ -9,7 +9,8 @@ function example_image_upload_handler(blobInfo, success, failure, progress) {
 
   xhr = new XMLHttpRequest();
   xhr.withCredentials = false;
-  xhr.open("POST", "http://localhost:5000/api/posts");
+  xhr.open("POST", "http://localhost:5000/api/add-post"); // right
+  // xhr.open("POST", "http://localhost:5000/api/posts"); // wrong
 
   xhr.upload.onprogress = function (e) {
     progress((e.loaded / e.total) * 100);
@@ -153,7 +154,8 @@ function AddPost() {
               // content_style:
               //   "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
               ///////
-              // images_upload_url: "http://localhost:5000/api/posts",
+              images_upload_url: "public/images",
+              // images_upload_url: "public/images",
               images_upload_handler: example_image_upload_handler,
               ////////
               // image_title: true,
