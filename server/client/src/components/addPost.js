@@ -9,7 +9,7 @@ function example_image_upload_handler(blobInfo, success, failure, progress) {
 
   xhr = new XMLHttpRequest();
   xhr.withCredentials = false;
-  xhr.open("POST", "http://localhost:5000/api/add-post"); // right
+  xhr.open("POST", "api/add-post"); // right
   // xhr.open("POST", "http://localhost:5000/api/posts"); // wrong
 
   xhr.upload.onprogress = function (e) {
@@ -36,6 +36,7 @@ function example_image_upload_handler(blobInfo, success, failure, progress) {
       return;
     }
 
+    console.log("sucessfully updated");
     success(json.location);
   };
 
@@ -47,7 +48,7 @@ function example_image_upload_handler(blobInfo, success, failure, progress) {
 
   formData = new FormData();
   formData.append("file", blobInfo.blob(), blobInfo.filename());
-
+  console.log("hiya check at 51 in addPost///");
   xhr.send(formData);
 }
 
@@ -64,6 +65,7 @@ function AddPost() {
     settTitle(e.target.value);
   };
   const descriptionChange = (e) => {
+    console.log("sucessfully descriptionChange called/////");
     // console.log(
     //   e.target.getContent({ format: "text" }),
     //   "e.target.getContent()"
@@ -79,7 +81,7 @@ function AddPost() {
   const handleSubmit = (e) => {
     console.log(description, "description//////");
 
-    fetch("/api/add-post", {
+    fetch("http://localhost:5000/api/add-post", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       // We convert the React state to JSON and send it as the POST body
@@ -142,56 +144,61 @@ function AddPost() {
               // //
               // images_upload_url: "postAcceptor.php",
 
-              // /* we override default upload handler to simulate successful upload*/
+              ///////
+              // images_upload_url: "api/add-post",
+              // images_upload_handler: example_image_upload_handler,
               // images_upload_handler: function (blobInfo, success, failure) {
               //   setTimeout(function () {
               //     /* no matter what you upload, we will turn it into TinyMCE logo :)*/
-              //     success(
-              //       "http://moxiecode.cachefly.net/tinymce/v9/images/logo.png"
-              //     );
+              //     success('http://moxiecode.cachefly.net/tinymce/v9/images/logo.png');
               //   }, 2000);
               // },
-              // content_style:
-              //   "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-              ///////
-              images_upload_url: "public/images",
-              // images_upload_url: "public/images",
-              images_upload_handler: example_image_upload_handler,
               ////////
-              // image_title: true,
-              // automatic_uploads: false,
-              // file_picker_types: "image",
-              // // relative_urls: true,
-              // // remove_script_host: false,
-              // // convert_urls: true,
-              // file_picker_callback: function (cb, value, meta) {
-              //   var input = document.createElement("input");
-              //   input.setAttribute("type", "file");
-              //   input.setAttribute("accept", "image/*");
-              //   input.onchange = function () {
-              //     var file = this.files[0];
-              //     console.log(file);
-              //     var reader = new FileReader();
-              //     reader.onload = function () {
-              //       var id = "blobid" + new Date().getTime();
-              //       // console.log(id, "id///////");
-              //       var blobCache =
-              //         window.tinymce.activeEditor.editorUpload.blobCache;
-              //       // console.log(blobCache, "blobCache///////");
-              //       let base64 = reader.result.split(",")[1];
-              //       // console.log(reader.result, "reader.result//////");
-              //       // console.log(base64, "base64///////");
-              //       // base64 = base64.slice(0, 10);
-              //       var blobInfo = blobCache.create(id, file, base64);
-              //       blobCache.add(blobInfo);
-              //       // console.log(file.name, "file.name/////");
+              image_title: true,
+              automatic_uploads: true,
+              images_upload_url: "api/add-post",
+              file_picker_types: "image",
+              /* and here's our custom image picker*/
+              file_picker_callback: function (cb, value, meta) {
+                var input = document.createElement("input");
+                input.setAttribute("type", "file");
+                input.setAttribute("accept", "image/*");
 
-              //       cb(blobInfo.blobUri(), { title: file.name });
-              //     };
-              //     reader.readAsDataURL(file);
-              //   };
-              //   input.click();
-              // },
+                /*
+      Note: In modern browsers input[type="file"] is functional without
+      even adding it to the DOM, but that might not be the case in some older
+      or quirky browsers like IE, so you might want to add it to the DOM
+      just in case, and visually hide it. And do not forget do remove it
+      once you do not need it anymore.
+    */
+
+                input.onchange = function () {
+                  var file = this.files[0];
+
+                  var reader = new FileReader();
+                  reader.onload = function () {
+                    /*
+          Note: Now we need to register the blob in TinyMCEs image blob
+          registry. In the next release this part hopefully won't be
+          necessary, as we are looking to handle it internally.
+        */
+                    var id = "blobid" + new Date().getTime();
+                    var blobCache =
+                      window.tinymce.activeEditor.editorUpload.blobCache;
+                    var base64 = reader.result.split(",")[1];
+                    var blobInfo = blobCache.create(id, file, base64);
+                    blobCache.add(blobInfo);
+
+                    /* call the callback and populate the Title field with the file name */
+                    cb(blobInfo.blobUri(), { title: file.name });
+                  };
+                  reader.readAsDataURL(file);
+                };
+
+                input.click();
+              },
+              content_style:
+                "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
             }}
           />
         </Form.Group>

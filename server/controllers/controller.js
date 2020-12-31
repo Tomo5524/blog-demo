@@ -15,7 +15,7 @@ exports.post_create_post = [
   // Process request after validation and sanitization.
   (req, res, next) => {
     // console.log(req, "req////////");
-    // console.log(req.file, "req.file///////");
+    console.log(req.file, "req.file///////");
     // console.log(req.body.brand, "req.body");
     // console.log(req.body.category, "req.body.category"); // 5fb06dddcc3e521c282ce22a req.body.category
     res.json({ location: `public/images/${req.file.filename}` });
@@ -35,7 +35,7 @@ exports.post_create_post = [
     });
 
     if (!errors.isEmpty()) {
-      // console.log(errors);
+      console.log(errors);
       // There are errors. Render the form again with sanitized values/error messages.
       // Genre.find({}, "name").exec(function (err, genres) {
       //   if (err) {
