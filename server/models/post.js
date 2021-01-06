@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const slugify = require("slugify");
 
 const postSchema = new Schema({
   // username: { type: String, required: true, index: { unique: true } },
@@ -7,12 +8,29 @@ const postSchema = new Schema({
   description: { type: String, required: true },
   comments: [{ type: [Object] }],
   date: { type: String },
+  slug: {
+    type: String,
+    required: true,
+    unique: true,
+  },
 });
 
 // this returns the absolute URL required to get a particular instance of the model
 // so we can get id when clicking a particular item
 postSchema.virtual("url").get(function () {
   return `/post/${this._id}`;
+});
+
+// postSchema.pre("validate", function ()=> {} { // doest not work
+postSchema.pre("validate", function (next) {
+  if (this.title) {
+    this.slug = slugify(this.title, {
+      // replacement: "-", // replace spaces with replacement character, defaults to `-`
+      lower: true, // convert to lower case, defaults to `false`
+      strict: true, // strip special characters except replacement, defaults to `false`
+    });
+  }
+  next();
 });
 
 module.exports = mongoose.model("post", postSchema);

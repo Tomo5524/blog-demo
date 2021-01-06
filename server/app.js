@@ -43,7 +43,15 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  console.log(
+    res.locals.error,
+    "res.locals.error////",
+    res.locals.message,
+    "res.locals.message/////",
+    err.status,
+    "err.status///////"
+  );
+  res.json(res.locals.error, res.locals.message, err.status);
 });
 
 module.exports = app;

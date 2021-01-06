@@ -9,7 +9,9 @@ function example_image_upload_handler(blobInfo, success, failure, progress) {
 
   xhr = new XMLHttpRequest();
   xhr.withCredentials = false;
-  xhr.open("POST", "api/add-post"); // right
+  xhr.open("POST", "api/image-upload"); // right
+  // xhr.setRequestHeader("Accept", "application/json");
+
   // xhr.open("POST", "http://localhost:5000/api/posts"); // wrong
 
   xhr.upload.onprogress = function (e) {
@@ -116,7 +118,7 @@ function AddPost() {
         </Form.Group>
 
         <Form.Group>
-          <Form.Label>Description</Form.Label>
+          {/* <Form.Label>Description</Form.Label> */}
           <Editor
             apiKey={process.env.tinyAPI}
             name="description"
@@ -145,8 +147,8 @@ function AddPost() {
               // images_upload_url: "postAcceptor.php",
 
               ///////
-              // images_upload_url: "api/add-post",
-              // images_upload_handler: example_image_upload_handler,
+              images_upload_url: "api/image-upload",
+              images_upload_handler: example_image_upload_handler,
               // images_upload_handler: function (blobInfo, success, failure) {
               //   setTimeout(function () {
               //     /* no matter what you upload, we will turn it into TinyMCE logo :)*/
@@ -154,49 +156,56 @@ function AddPost() {
               //   }, 2000);
               // },
               ////////
-              image_title: true,
-              automatic_uploads: true,
-              images_upload_url: "api/add-post",
-              file_picker_types: "image",
-              /* and here's our custom image picker*/
-              file_picker_callback: function (cb, value, meta) {
-                var input = document.createElement("input");
-                input.setAttribute("type", "file");
-                input.setAttribute("accept", "image/*");
+              // image_title: true,
+              // automatic_uploads: false,
+              ////
+              // images_upload_url: "api/add-post",
+              // images_upload_base_path: "/some/basepath",
+              // images_upload_credentials: true,
 
-                /*
-      Note: In modern browsers input[type="file"] is functional without
-      even adding it to the DOM, but that might not be the case in some older
-      or quirky browsers like IE, so you might want to add it to the DOM
-      just in case, and visually hide it. And do not forget do remove it
-      once you do not need it anymore.
-    */
+              // image_class_list: [
+              //   { title: "Responsive", value: "img-responsive" },
+              // ],
+              //           file_picker_types: "image",
+              //           /* and here's our custom image picker*/
+              //           file_picker_callback: function (cb, value, meta) {
+              //             var input = document.createElement("input");
+              //             input.setAttribute("type", "file");
+              //             input.setAttribute("accept", "image/*");
 
-                input.onchange = function () {
-                  var file = this.files[0];
+              //             /*
+              //   Note: In modern browsers input[type="file"] is functional without
+              //   even adding it to the DOM, but that might not be the case in some older
+              //   or quirky browsers like IE, so you might want to add it to the DOM
+              //   just in case, and visually hide it. And do not forget do remove it
+              //   once you do not need it anymore.
+              // */
 
-                  var reader = new FileReader();
-                  reader.onload = function () {
-                    /*
-          Note: Now we need to register the blob in TinyMCEs image blob
-          registry. In the next release this part hopefully won't be
-          necessary, as we are looking to handle it internally.
-        */
-                    var id = "blobid" + new Date().getTime();
-                    var blobCache =
-                      window.tinymce.activeEditor.editorUpload.blobCache;
-                    var base64 = reader.result.split(",")[1];
-                    var blobInfo = blobCache.create(id, file, base64);
-                    blobCache.add(blobInfo);
+              //             input.onchange = function () {
+              //               var file = this.files[0];
 
-                    /* call the callback and populate the Title field with the file name */
-                    cb(blobInfo.blobUri(), { title: file.name });
-                  };
-                  reader.readAsDataURL(file);
-                };
+              //               var reader = new FileReader();
+              //               reader.onload = function () {
+              //                 /*
+              //       Note: Now we need to register the blob in TinyMCEs image blob
+              //       registry. In the next release this part hopefully won't be
+              //       necessary, as we are looking to handle it internally.
+              //     */
+              //                 var id = "blobid" + new Date().getTime();
+              //                 var blobCache =
+              //                   window.tinymce.activeEditor.editorUpload.blobCache;
+              //                 var base64 = reader.result.split(",")[1];
+              //                 var blobInfo = blobCache.create(id, file, base64);
+              //                 blobCache.add(blobInfo);
 
-                input.click();
-              },
+              //                 /* call the callback and populate the Title field with the file name */
+              //                 cb(blobInfo.blobUri(), { title: file.name });
+              //               };
+              //               reader.readAsDataURL(file);
+              //             };
+
+              //             input.click();
+              //           },
               content_style:
                 "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
             }}

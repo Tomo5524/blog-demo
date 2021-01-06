@@ -28,23 +28,29 @@ const upload = multer({
 
 /* GET home page. */
 
-router.get("/api/posts", function (req, res, next) {
-  // const posts = [
-  //   { id: 1, post: "meow meow meow", data: new Date().toLocaleString() },
-  //   { id: 2, post: "hana meow meow", data: new Date().toLocaleString() },
-  // ];
-  Post.find().exec(function (err, posts) {
-    if (err) {
-      return next(err);
-    }
-    // Successful, so render
-    res.status(200).json(posts);
-    // res.json(posts);
-  });
-  // res.json(a);
-});
+// router.get("/api/posts", (req, res, next) => {
+//   // const posts = [
+//   //   { id: 1, post: "meow meow meow", data: new Date().toLocaleString() },
+//   //   { id: 2, post: "hana meow meow", data: new Date().toLocaleString() },
+//   // ];
+//   Post.find().exec(function (err, posts) {
+//     if (err) {
+//       return next(err);
+//     }
+//     // Successful, so render
+//     res.status(200).json(posts);
+//     // res.json(posts);
+//   });
+//   // res.json(a);
+// });
 
-router.post("/api/add-post", upload, Controllers.post_create_post);
+router.get("/api/posts", Controllers.posts_get);
+
+router.get("/api/post/:slug", Controllers.post_get);
+
+router.post("/api/image-upload", upload, Controllers.image_upload_post);
+
+router.post("/api/add-post", Controllers.post_create_post);
 
 // router.post("/api/add-post", function (req, res, next) {
 //   console.log(req.body);
