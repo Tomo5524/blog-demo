@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react";
+import renderHTML from "react-render-html";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useHistory } from "react-router-dom";
+import auth from "../services/auth";
 
 function example_image_upload_handler(blobInfo, success, failure, progress) {
   var xhr, formData;
@@ -54,15 +56,50 @@ function example_image_upload_handler(blobInfo, success, failure, progress) {
   xhr.send(formData);
 }
 
-function AddPost() {
+function AddPost(props) {
+  // console.log("AddPost called");
+  console.log(props, "props////");
+
   const [title, settTitle] = useState("");
   const [description, setDescription] = useState("");
   let history = useHistory();
-  // useEffect(() => {
-  //   fetch("/api/posts")
-  //     .then((res) => res.json())
-  //     .then((posts) => setCats(posts));
-  // }, []);
+
+  let Title;
+  let Description;
+  let id;
+  let Date;
+  if (typeof props.location.state != "undefined") {
+    const {
+      location: {
+        state: {
+          post: { title, description, _id, date },
+        },
+      },
+    } = props;
+    Title = title;
+    Description = renderHTML(description);
+    id = _id;
+    Date = date;
+  }
+
+  useEffect(() => {
+    console.log("useEffect called");
+    if (typeof props.location.state != "undefined") {
+      getTitle();
+      getDescription();
+    }
+  }, []);
+
+  const getTitle = () => {
+    console.log("getTitle called");
+    settTitle(Title);
+  };
+
+  const getDescription = () => {
+    console.log("getDescription called");
+    setDescription(Description);
+  };
+
   const titleChange = (e) => {
     settTitle(e.target.value);
   };
@@ -83,25 +120,54 @@ function AddPost() {
   const handleSubmit = (e) => {
     console.log(description, "description//////");
 
-    fetch("http://localhost:5000/api/add-post", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      // We convert the React state to JSON and send it as the POST body
-      // body: JSON.stringify(title, description), does not work
-      body: JSON.stringify({ title, description }),
-      // returned in the following format
-      // {
-      //   "title": "safdsadf",
-      //   "description": "sdafasdf"
-      // }
-    }).then(function (response) {
-      // console.log(description, "description//////");
-      // console.log(response, "response//////");
-      return response.json();
-    });
-
+    if (id) {
+      console.log(Date, "Date//////////");
+      console.log("edit was called");
+      fetch(`http://localhost:5000/api/edit/${id}`, {
+        method: "POST",
+        acition: `/api/edit/${id}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: auth.authHeader(),
+        },
+        // We convert the React state to JSON and send it as the POST body
+        // body: JSON.stringify(title, description), does not work
+        body: JSON.stringify({ title, description, Date }),
+        // returned in the following format
+        // {
+        //   "title": "safdsadf",
+        //   "description": "sdafasdf"
+        // }
+      }).then(function (response) {
+        // console.log(description, "description//////");
+        // console.log(response, "response//////");
+        return response.json();
+      });
+    } else {
+      console.log("new post was called");
+      fetch("http://localhost:5000/api/add-post", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: auth.authHeader(),
+        },
+        // We convert the React state to JSON and send it as the POST body
+        // body: JSON.stringify(title, description), does not work
+        body: JSON.stringify({ title, description }),
+        // returned in the following format
+        // {
+        //   "title": "safdsadf",
+        //   "description": "sdafasdf"
+        // }
+      }).then(function (response) {
+        // console.log(response, "response//////");
+        return response.json();
+      });
+    }
+    // window.location.reload();
     e.preventDefault();
     history.push("/posts");
+    window.location.reload();
   };
 
   return (
@@ -112,6 +178,7 @@ function AddPost() {
           <Form.Control
             type="text"
             placeholder="Enter title"
+            value={title}
             name="title"
             onChange={titleChange}
           />
@@ -122,7 +189,9 @@ function AddPost() {
           <Editor
             apiKey={process.env.tinyAPI}
             name="description"
+            // value={description}
             onChange={descriptionChange}
+            // value="hiya"
             init={{
               plugins: [
                 "advlist autolink lists link image charmap print preview anchor",
@@ -134,6 +203,11 @@ function AddPost() {
                 | link image | alignleft aligncenter alignright alignjustify  | \
                 bullist numlist outdent indent | removeformat | help",
 
+              setup: function (editor) {
+                editor.on("init", async function (e) {
+                  await editor.setContent(description);
+                });
+              },
               /////
               // file_browser_callback_types: "image",
               // entity_encoding: "raw",

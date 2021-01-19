@@ -1,5 +1,6 @@
 import React from "react";
 // import { Link, NavLink } from "react-router-dom";
+import auth from "../services/auth";
 import { Link } from "react-router-dom";
 import { NavLink } from "react-router";
 import {
@@ -25,9 +26,22 @@ const NavBar = () => {
           <Nav.Link as={Link} to="/posts">
             Posts
           </Nav.Link>
-          <Nav.Link as={Link} to="/add-post">
-            Add Post
-          </Nav.Link>
+          {auth.getUser() !== null ? (
+            <React.Fragment>
+              <Nav.Link as={Link} to="/add-post">
+                Add Post
+              </Nav.Link>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <Nav.Link as={Link} to="/sign-up">
+                Sign-up
+              </Nav.Link>
+              <Nav.Link as={Link} to="/login">
+                Login
+              </Nav.Link>
+            </React.Fragment>
+          )}
         </Nav>
       </Navbar.Collapse>
     </Navbar>
